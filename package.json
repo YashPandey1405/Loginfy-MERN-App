@@ -1,0 +1,27 @@
+{
+  "name": "loginfy-mern",
+  "version": "1.0.0",
+  "description": "An Complete MERN Based Tweet-Application",
+  "license": "ISC",
+  "author": "Yash Pandey",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mailgen": "^2.0.29",
+    "mongoose": "^8.14.1",
+    "multer": "^1.4.5-lts.2",
+    "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
+  }
+}
