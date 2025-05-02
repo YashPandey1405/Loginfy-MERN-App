@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import apiClient from "../../services/apiClient";
 import FlashMessage from "./FlashMessage";
+import ErrorMessage from "./ErrorMessage";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [flashMessage, setFlashMessage] = useState(""); // State to hold profile data
+
+  const [flashMessage, setFlashMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch the profile data as soon as the component is mounted
   useEffect(() => {
     const getData = async () => {
       try {
+        // Check if the page has already been refreshed
+        if (localStorage.getItem("refreshed")) {
+          localStorage.clear();
+          window.location.reload(); // Refresh the page once
+        }
+
         console.log("Fetching data from API...");
         const Message = await apiClient.getLoginPage();
         setFlashMessage(Message.flashMessage);
@@ -27,28 +39,45 @@ const LoginForm = () => {
     getData(); // Call API immediately on mount
   }, []); // Empty dependency array ensures it runs only once when component mounts
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     // Simple validation
-    if (!email || !password) {
-      setErrorMessage("Please enter both email and password.");
+    if (!name || !email || !password) {
+      setErrorMessage("Please enter valid name , email and password.");
     } else {
       setErrorMessage("");
-      // Handle login logic here (e.g., API call)
-      console.log("Logging in with:", { email, password });
+      try {
+        // Handle login logic here (e.g., API call)
+        console.log(name, email, password);
+        console.log("Fetching data from API...");
+        const Message = await apiClient.login(name, email, password);
+        console.log("API Message:", Message); // Log the fetched data
+        if (Message.success) {
+          setName("");
+          setEmail("");
+          setPassword("");
+          navigate("/me");
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          setErrorMessage(err.response.data); // This would be error message from the server
+        } else {
+          setErrorMessage("Something went wrong. Please try again.");
+        }
+      }
     }
+    setLoading(false);
   };
 
   return (
     <>
       <div className="container mb-5">
-      <FlashMessage message={flashMessage} />
+        <FlashMessage message={flashMessage} />
+        {errorMessage && <ErrorMessage message={errorMessage} />}
+
         <div className="mt-5">
           <h1 className="mb-4">Login On Our Platform</h1>
-          {errorMessage && (
-            <div className="alert alert-danger">{errorMessage}</div>
-          )}
           <form onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-12 col-md-6 mb-3">

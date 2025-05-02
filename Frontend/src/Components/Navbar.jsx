@@ -1,12 +1,31 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import CheckLogin from "./CheckLogin";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [theme, setTheme] = useState("dark");
+  const [isLoggedInState, setIsLoggedInState] = useState(true);
+
+  const handleLoginClick = async (path) => {
+    await fetchLoginStatus();
+    navigate(path);
+    window.location.reload();
+  };
+
+  const fetchLoginStatus = async () => {
+    const isLoggedIn = await CheckLogin();
+    setIsLoggedInState(isLoggedIn);
+  };
 
   useEffect(() => {
+    fetchLoginStatus();
     document.documentElement.setAttribute("data-bs-theme", theme);
+
+    const interval = setInterval(fetchLoginStatus, 30000); // every 30 sec
+    return () => clearInterval(interval); // cleanup on unmount
   }, [theme]);
 
   return (
@@ -32,20 +51,40 @@ const Navbar = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav">
-            <Link
-              className="nav-link"
-              to="/login"
-              style={{ fontSize: "20px", lineHeight: "1" }}
-            >
-              Login
-            </Link>
-            <Link
-              className="nav-link"
-              to="/signup"
-              style={{ fontSize: "20px", lineHeight: "1" }}
-            >
-              Signup
-            </Link>
+            {!isLoggedInState && (
+              <li>
+                <button
+                  onClick={() => handleLoginClick("/login")}
+                  className="nav-link"
+                  style={{ fontSize: "20px", lineHeight: "1" }}
+                >
+                  Login
+                </button>
+              </li>
+            )}
+            {!isLoggedInState && (
+              <li>
+                <button
+                  onClick={() => handleLoginClick("/signup")}
+                  className="nav-link"
+                  style={{ fontSize: "20px", lineHeight: "1" }}
+                >
+                  Signup
+                </button>
+              </li>
+            )}
+            {isLoggedInState && (
+              <li>
+                <button
+                  onClick={() => handleLoginClick("/logout")}
+                  className="nav-link"
+                  style={{ fontSize: "20px", lineHeight: "1" }}
+                >
+                  Logout
+                </button>
+              </li>
+            )}
+            {/* <p>{isLoggedInState ? "Logged In" : "Logged Out"}</p> */}
 
             <li className="nav-item">
               <button

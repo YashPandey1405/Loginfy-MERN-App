@@ -37,10 +37,10 @@ class ApiClient {
       body: JSON.stringify({ name, email, password }),
     });
   }
-  async login(email, password) {
+  async login(loginUserName, loginEmail, loginPassword) {
     return this.customFetch("/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ loginUserName, loginEmail, loginPassword }),
     });
   }
 
@@ -54,6 +54,14 @@ class ApiClient {
 
   async getProfiles() {
     return this.customFetch("/me");
+  }
+
+  async logout() {
+    return this.customFetch("/logout");
+  }
+
+  async isloggedIn() {
+    return this.customFetch("/status");
   }
 }
 

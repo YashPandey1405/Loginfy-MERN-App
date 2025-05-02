@@ -30,6 +30,16 @@ Router.route("/").get(async (req, res) => {
   }
 });
 
+// An Route To Check If User Is Logged In Or Not......
+Router.route("/status").get(async (req, res) => {
+  const token = req.cookies?.accessToken;
+  if (token) {
+    res.json({ loggedIn: true });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
 Router.route("/login").get(LoginPageShow).post(LoginPagePostController);
 Router.route("/signup")
   .get(SignUpPageShow)
@@ -37,6 +47,6 @@ Router.route("/signup")
 
 // These routes are protected and require JWT verification....
 Router.route("/logout").get(verifyJWT, LogOutUserController);
-Router.route("/me").get(UserPage);
+Router.route("/me").get(verifyJWT, UserPage);
 Router.route("/refresh-token").post(refreshAccessToken);
 export default Router;

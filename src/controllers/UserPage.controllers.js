@@ -2,10 +2,10 @@ import { User } from "../models/user.models.js";
 
 const UserPage = async (req, res) => {
   try {
-    // const flashMessage = req.cookies.flashMessage;
+    const flashMessage = req.cookies.flashMessage;
 
     // Remove the flash message after reading it
-    // res.clearCookie("flashMessage");
+    res.clearCookie("flashMessage");
 
     const allUsers = await User.find().select("-password");
 
@@ -14,6 +14,7 @@ const UserPage = async (req, res) => {
     }
     res.json({
       user: allUsers, // Send allUsers as "user"
+      flashMessage: flashMessage, // Send flash message
     });
     // flashMessage: flashMessage, // Send flash message
   } catch (error) {

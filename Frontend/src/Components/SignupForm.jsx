@@ -15,6 +15,12 @@ const SignupForm = () => {
   useEffect(() => {
     const getData = async () => {
       try {
+        // Check if the page has already been refreshed
+        if (localStorage.getItem("refreshed")) {
+          localStorage.clear();
+          window.location.reload(); // Refresh the page once
+        }
+
         console.log("Fetching data from API...");
         const Message = await apiClient.getSignupPage();
         setFlashMessage(Message.flashMessage);

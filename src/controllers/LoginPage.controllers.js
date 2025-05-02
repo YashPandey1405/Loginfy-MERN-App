@@ -25,15 +25,15 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
 const LoginPageShow = async (req, res) => {
   try {
-    const flashMessage = "Welcome to the login page!"; 
     // Placeholder for flash message
-    // const flashMessage = req.cookies.flashMessage;
+    const flashMessage =
+      req.cookies?.flashMessage || "Welcome to the login page!";
 
     // Remove the flash message after reading it
-    // res.clearCookie("flashMessage");
+    res.clearCookie("flashMessage");
 
     res.json({
-      flashMessage: flashMessage, 
+      flashMessage: flashMessage,
     });
   } catch (error) {
     console.error("Error rendering login page:", error);
@@ -99,7 +99,10 @@ const LoginPagePostController = async (req, res) => {
         maxAge: 60000,
         httpOnly: true,
       })
-      .redirect("/me"); // Redirect to /me after setting cookies
+      .json({
+        message: "Login successful on the website",
+        success: true,
+      });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).send("Internal Server Error");
@@ -129,10 +132,13 @@ const LogOutUserController = async (req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .cookie("flashMessage", "You have successfully logged out", {
-      maxAge: 60000,
+      maxAge: 5000,
       httpOnly: true,
     })
-    .redirect("/login"); // Redirect to login page after logout
+    .json({
+      message: "Logout successful on the website",
+      success: true,
+    });
 };
 
 const refreshAccessToken = async (req, res) => {

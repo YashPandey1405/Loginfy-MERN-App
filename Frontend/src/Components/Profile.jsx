@@ -1,35 +1,43 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../services/apiClient";
+import FlashMessage from "./FlashMessage";
+import ErrorMessage from "./ErrorMessage";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
+  const [flashMessage, setFlashMessage] = useState("GOAT");
+  const [errorMessage, setErrorMessage] = useState("");
 
+  // window.location.reload();
   // Fetch the profile data as soon as the component is mounted
   useEffect(() => {
     const getData = async () => {
       try {
+        // Check if the page has already been refreshed
+        if (!localStorage.getItem("refreshed")) {
+          localStorage.setItem("refreshed", "true");
+          window.location.reload(); // Refresh the page once
+        }
+
         const ProfilesData = await apiClient.getProfiles();
         setProfile(ProfilesData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        setFlashMessage(ProfilesData.flashMessage);
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          setErrorMessage(err.response.data); // This would be error message from the server
+        } else {
+          setErrorMessage("Something went wrong. Please try again.");
+        }
       }
     };
 
     getData(); // Call API immediately on mount
   }, []); // Empty dependency array ensures it runs only once when component mounts
 
-  //   const getData = async () => {
-  //     try {
-  //       const ProfilesData = await apiClient.getProfiles();
-  //       console.log(ProfilesData);
-  //       setProfile(ProfilesData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
   return (
     <div className="container mt-3">
+      <FlashMessage message={flashMessage} />
+      {errorMessage && <ErrorMessage message={errorMessage} />}
       <div className="row row-cols-lg-3 row-cols-md-2 row-cols-1">
         {profile?.user?.map((user) => (
           <div className="col mb-5" key={user._id}>
