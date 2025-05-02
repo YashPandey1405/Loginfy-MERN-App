@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import apiClient from "../../services/apiClient";
+import FlashMessage from "./FlashMessage";
 
 const SignupForm = () => {
   const [username, setUserName] = useState("");
@@ -6,7 +8,25 @@ const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [flashMessage, setFlashMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Fetch the profile data as soon as the component is mounted
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        console.log("Fetching data from API...");
+        const Message = await apiClient.getSignupPage();
+        setFlashMessage(Message.flashMessage);
+        console.log("API Message:", Message); // Log the fetched data
+        console.log("Flash Message:", Message.flashMessage); // Log the fetched data
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    getData(); // Call API immediately on mount
+  }, []); // Empty dependency array ensures it runs only once when component mounts
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,7 +42,8 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container mb-5">
+      <FlashMessage message={flashMessage} />
       <div className="mt-5">
         <h1 className="mb-4">Sign Up On Our Platform</h1>
         {errorMessage && (

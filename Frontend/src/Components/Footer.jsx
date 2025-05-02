@@ -25,7 +25,7 @@ const Footer = () => {
   return (
     <div className="footers">
       {theme === "light" ? (
-        <footer className="footer fixed-bottom text-center border-top bg-light text-dark py-3 border-3 ">
+        <footer className="footer sticky-bottom text-center border-top bg-light text-dark py-3 border-3 ">
           <div className="container">
             <div className="mb-3 d-flex justify-content-center align-items-center gap-3">
               <a
@@ -57,7 +57,7 @@ const Footer = () => {
           </div>
         </footer>
       ) : (
-        <footer className="footer fixed-bottom border-top border-3 text-center bg-dark text-white py-3 ">
+        <footer className="footer sticky-bottom border-top border-3 text-center bg-dark text-white py-3 ">
           <div className="container">
             <div className="mb-3 d-flex justify-content-center align-items-center gap-3">
               <a
