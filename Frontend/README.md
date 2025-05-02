@@ -70,19 +70,15 @@ npm run dev
 
 ### 🔐 Login Page
 
-![Login Page](..\Conceptual-Learning\asserts\LoginPage.png)
+![Login Page](../Conceptual-Learning/asserts/LoginPage.png)
 
-### 📝 Signup Page
-
-![Signup Page](..\Conceptual-Learning\asserts\SignupPage.png)
-
-### 🏠 Home Page (After Login\Signup)
+![Signup Page](../Conceptual-Learning/asserts/SignupPage.png)
 
 **Light Mode**
-![Home Page Light](..\Conceptual-Learning\asserts\HomePageLight.png)
+![Home Page Light](../Conceptual-Learning/asserts/HomePageLight.png)
 
 **Dark Mode**
-![Home Page Dark](..\Conceptual-Learning\asserts\HomePageDark.png)
+![Home Page Dark](../Conceptual-Learning/asserts/HomePageDark.png)
 
 ---
 
