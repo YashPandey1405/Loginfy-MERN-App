@@ -23,12 +23,12 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
 const SignUpPageShow = async (req, res) => {
   try {
-    const flashMessage = "Welcome to the signup page!";
     // Placeholder for flash message
-    // const flashMessage = req.cookies.flashMessage;
+    const flashMessage =
+      req.cookies?.flashMessage || "Welcome to the signup page!";
 
     // Remove the flash message after reading it
-    // res.clearCookie("flashMessage");
+    res.clearCookie("flashMessage");
 
     res.json({
       flashMessage: flashMessage,
@@ -43,18 +43,19 @@ const SignUpPostController = async (req, res) => {
   try {
     console.log("🚀 SignUpPostController called");
     console.log("📝 Body:", req.body);
-    console.log("📸 File:", req.file);
+    // console.log("📸 File:", req.file);
 
     const { signupUserName, signupFullName, signupEmail, signupPassword } =
       req.body;
 
     // Check if the file was uploaded successfully
-    if (!req.file) {
-      return res.status(400).send("Image file is required.");
-    }
+    // if (!req.file) {
+    //   return res.status(400).json({ error: "Image file is required." });
+    // }
 
-    const imageUrl = req.file.path;
-    const imageFilename = req.file.filename;
+    const imageUrl =
+      "https://res.cloudinary.com/dah7l8utl/image/upload/v1746192079/Loginfy-JWT_DEV/tcwkwb01ogtkbkoqhuft.jpg";
+    const imageFilename = "Loginfy-JWT_DEV/tcwkwb01ogtkbkoqhuft";
 
     console.log("✅ imageUrl:", imageUrl);
     console.log("✅ imageFilename:", imageFilename);
@@ -113,10 +114,13 @@ const SignUpPostController = async (req, res) => {
         maxAge: 60000,
         httpOnly: true,
       })
-      .redirect("/me");
+      .json({
+        message: "Signup successful on the website",
+        success: true,
+      });
   } catch (error) {
     console.error("❌ Error in SignUpPostController:", error);
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send("Internal Server Error during signup Route");
   }
 };
 

@@ -12,6 +12,14 @@ class ApiClient {
       const url = `${this.baseURL}${endpoint}`;
       const headers = { ...this.defaultHeaders, ...options.headers };
 
+      // // If the body is FormData, do not set Content-Type header manually
+      // if (options.body instanceof FormData) {
+      //   delete headers["Content-Type"]; // Let the browser handle Content-Type for FormData
+      //   // headers["Content-Type"] = "multipart/form-data"; // To Send 'multipart/form-data' To The Server......
+      // } else if (options.body) {
+      //   headers["Content-Type"] = "application/json"; // Default to application/json if not FormData
+      // }
+
       const config = {
         ...options,
         headers,
@@ -31,10 +39,15 @@ class ApiClient {
 
   //Auth endpoints
 
-  async signup(name, email, password) {
+  async signup(signupUserName, signupFullName, signupEmail, signupPassword) {
     return this.customFetch("/signup", {
       method: "POST",
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({
+        signupUserName,
+        signupFullName,
+        signupEmail,
+        signupPassword,
+      }),
     });
   }
   async login(loginUserName, loginEmail, loginPassword) {

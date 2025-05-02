@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import apiClient from "../../services/apiClient";
 import FlashMessage from "./FlashMessage";
 
 const SignupForm = () => {
+  const navigate = useNavigate();
+
   const [username, setUserName] = useState("");
   const [fullname, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // const [file, setFile] = useState(null);
+  // const [imagePreview, setImagePreview] = useState(null); // State to hold the image preview URL
+
+  // const [formData, setFormData] = useState({
+  //   signupFullName: "",
+  //   signupUserName: "",
+  //   signupEmail: "",
+  //   signupPassword: "",
+  //   signupImage: null,
+  // });
+
   const [loading, setLoading] = useState(false);
   const [flashMessage, setFlashMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,10 +30,10 @@ const SignupForm = () => {
     const getData = async () => {
       try {
         // Check if the page has already been refreshed
-        if (localStorage.getItem("refreshed")) {
-          localStorage.clear();
-          window.location.reload(); // Refresh the page once
-        }
+        // if (localStorage.getItem("refreshed")) {
+        //   localStorage.clear();
+        //   window.location.reload(); // Refresh the page once
+        // }
 
         console.log("Fetching data from API...");
         const Message = await apiClient.getSignupPage();
@@ -34,7 +48,7 @@ const SignupForm = () => {
     getData(); // Call API immediately on mount
   }, []); // Empty dependency array ensures it runs only once when component mounts
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     // Simple validation
@@ -42,13 +56,55 @@ const SignupForm = () => {
       setErrorMessage("Please enter username , email and password.");
     } else {
       setErrorMessage("");
+      // setImagePreview(URL.createObjectURL(file)); // Set the image preview URL
+
       // Handle login logic here (e.g., API call)
-      console.log("Logging in with:", { email, password });
+      // Create FormData
+      // const data = new FormData();
+      // data.append("signupFullName", fullname);
+      // data.append("signupUserName", username);
+      // data.append("signupEmail", email);
+      // data.append("signupPassword", password);
+      // data.append("image", file); // Important: 'file' must match backend field
+
+      try {
+        console.log(fullname, username, email, password);
+        console.log("1");
+        console.log("2");
+        console.log("Fetching data from API...");
+        console.log("3");
+        const Message = await apiClient.signup(
+          fullname,
+          username,
+          email,
+          password,
+        );
+        console.log("API Message:", Message); // Log the fetched data
+        console.log("4");
+        if (Message.success) {
+          console.log("5");
+
+          setFullName("");
+          setUserName("");
+          setEmail("");
+          setPassword("");
+          console.log("6");
+          navigate("/me");
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          setErrorMessage(err.response.data); // This would be error message from the server
+        } else {
+          setErrorMessage("Something went wrong. Please try again.");
+        }
+      }
     }
   };
 
   return (
     <div className="container mb-5">
+      {/* {imagePreview && <img src={imagePreview} alt="Preview" />} */}
+
       <FlashMessage message={flashMessage} />
       <div className="mt-5">
         <h1 className="mb-4">Sign Up On Our Platform</h1>
@@ -77,13 +133,14 @@ const SignupForm = () => {
               <input
                 type="text"
                 className="form-control"
-                id="username"
+                id="fullname"
                 placeholder="Enter Fullname"
                 value={fullname}
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
           </div>
+
           <div className="row">
             <div className="col-12 col-md-6 mb-3">
               <label htmlFor="email" className="form-label">
@@ -112,6 +169,23 @@ const SignupForm = () => {
               />
             </div>
           </div>
+
+          {/* 
+          <div className="row">
+            <div className="col-12 col-md-6 mb-3">
+              <label htmlFor="file" className="form-label">
+                Upload Image
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                id="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </div>
+          </div> */}
+
           <button
             type="submit"
             className="btn btn-primary mt-3 mb-5"

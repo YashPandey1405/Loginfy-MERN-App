@@ -41,9 +41,9 @@ Router.route("/status").get(async (req, res) => {
 });
 
 Router.route("/login").get(LoginPageShow).post(LoginPagePostController);
-Router.route("/signup")
-  .get(SignUpPageShow)
-  .post(upload.single("image"), SignUpPostController);
+Router.route("/signup").get(SignUpPageShow).post(SignUpPostController);
+
+// .post(upload.single("image"), SignUpPostController);
 
 // These routes are protected and require JWT verification....
 Router.route("/logout").get(verifyJWT, LogOutUserController);

@@ -1,12 +1,19 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import Router from "./routes/AuthRoute.routes.js";
 import DB_Connect from "./utils/DataBase.utils.js";
-import cookieParser from "cookie-parser";
 
-dotenv.config();
 const app = express();
+dotenv.config();
+
+// Define __dirname manually in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
 
